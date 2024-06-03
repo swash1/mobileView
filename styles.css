@@ -1,0 +1,51 @@
+body {
+  background-color: bisque;
+  padding-top: 20px;
+  padding-bottom: 200px;
+}
+
+.paginator {
+  position: fixed;
+  line-height: 40px;
+  top: 0;
+  left: 0;
+  background-color: white;
+  width: 100%;
+  height: 40px;
+}
+
+.tabs {
+  position: fixed;
+  top: 40px;
+  left: 0;
+  height: 40px;
+  background-color: gainsboro;
+  width: 100%;
+}
+
+.content {
+  font-size: 30px;
+}
+
+.actions {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  background-color: olive;
+  width: 100%;
+  height: 40px;
+}
+
+.bubbles {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  background-color: white;
+  width: 100%;
+  height: 40px;
+}
+
+.info {
+    padding: 20px;
+    display: block;
+}
