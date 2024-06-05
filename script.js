@@ -3,6 +3,7 @@ const paginator = document.querySelector(".paginator");
 const bubbles = document.querySelector(".bubbles");
 const actions = document.querySelector(".actions");
 const input = document.querySelector(".input");
+const anotherWrapper = document.querySelector(".another-wrapper");
 
 const updateStyles = (newHeight) => {
   bubbles.style.top = `${newHeight}px`;
@@ -44,7 +45,6 @@ function debounce(callee, timeoutMs) {
 }
 
 let fixPaginatorPosition = 0; // the fix
-let fixTabsPosition = 40; // the fix
 let lastScrollY = window.scrollY; // the last scroll position
 let wrapper = document.querySelector(".wrapper"); // the toolbar wrap
 
@@ -54,16 +54,14 @@ const setMargin = function () {
   const newPosition = wrapper.getBoundingClientRect().top;
   if (newPosition < -1) {
     // add a margin to show the toolbar
-    paginator.classList.add("down"); // add class so toolbar can be animated
+    anotherWrapper.classList.add("down"); // add class so toolbar can be animated
     fixPaginatorPosition = Math.abs(newPosition); // this is new position we need to fix the toolbar in the display
     // if at the bottom of the page take a couple of pixels off due to gap
     if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
       fixPaginatorPosition -= 2;
-      fixTabsPosition -= 2;
     }
     // set the margin to the new fixed position
-    paginator.style["margin-top"] = fixPaginatorPosition + "px";
-    tabs.style["margin-top"] = fixTabsPosition + "px";
+    anotherWrapper.style["margin-top"] = fixPaginatorPosition + "px";
   }
 };
 
@@ -74,15 +72,9 @@ const debounceMargin = debounce(setMargin, 150);
 const showToolbar = function () {
   // remove animation and put toolbar back in default position
   if (fixPaginatorPosition > 0) {
-    paginator.classList.remove("down");
+    anotherWrapper.classList.remove("down");
     fixPaginatorPosition = 0;
-    paginator.style["margin-top"] = 0 + "px";
-  }
-
-  if (fixTabsPosition > 40) {
-    tabs.classList.remove("down");
-    fixTabsPosition = 40;
-    tabs.style["margin-top"] = 40 + "px";
+    anotherWrapper.style["margin-top"] = 0 + "px";
   }
 
   // will check if toolbar needs to be fixed
