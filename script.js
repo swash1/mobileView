@@ -3,7 +3,7 @@ const paginator = document.querySelector(".paginator");
 const bubbles = document.querySelector(".bubbles");
 const actions = document.querySelector(".actions");
 const input = document.querySelector(".input");
-const wrapper = document.querySelector(".wrapper");
+const topBar = document.querySelector(".topBar");
 const info = document.querySelector(".info");
 
 function debounce(fn, delay) {
@@ -23,13 +23,13 @@ function debounce(fn, delay) {
 }
 
 input.addEventListener("focus", () => {
-  // tabs.setAttribute("hidden", "true");
+  tabs.setAttribute("hidden", "true");
   actions.setAttribute("hidden", "true");
   bubbles.removeAttribute("hidden");
 });
 
 input.addEventListener("blur", () => {
-  // tabs.removeAttribute("hidden");
+  tabs.removeAttribute("hidden");
   actions.removeAttribute("hidden");
   bubbles.setAttribute("hidden", "true");
 });
@@ -62,18 +62,22 @@ function viewportHandler(event) {
     })`;
 
     bottomBar.removeAttribute("hidden");
+    topBar.removeAttribute("hidden");
   });
 }
 
-const showBottomBar = () => {
+const showBars = () => {
   bottomBar.removeAttribute("hidden");
+  topBar.removeAttribute("hidden");
 };
 
-const debouncedViewportHandler = debounce(viewportHandler, 500);
-const debouncedShowBottomBar = debounce(showBottomBar, 500);
+const debouncedViewportHandler = debounce(viewportHandler, 300);
+const debouncedShowBars = debounce(showBars, 300);
 
 const handleViewport = (e) => {
   bottomBar.setAttribute("hidden", "true");
+  topBar.setAttribute("hidden", "true");
+
   debouncedViewportHandler(e);
 };
 
@@ -82,6 +86,7 @@ window.visualViewport.addEventListener("resize", (e) => handleViewport(e));
 
 window.addEventListener("scroll", () => {
   bottomBar.setAttribute("hidden", "true");
+  topBar.setAttribute("hidden", "true");
 
-  debouncedShowBottomBar();
+  debouncedShowBars();
 });
