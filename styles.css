@@ -21,7 +21,7 @@ body {
 .tabs {
   position: fixed;
   left: 0px;
-  right: 0px;
+  margin-top: 40px;
   height: 40px;
   background-color: gainsboro;
   width: 100%;
@@ -51,14 +51,15 @@ body {
   display: block;
 }
 
-#toolbar-wrap {
+.wrapper {
   position: sticky;
   top: 0px;
   height: 60px;
   width: 100%;
 }
 
-#toolbar.down {
+.paginator.down,
+.tabs.down {
   transition-property: all;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 500ms;
