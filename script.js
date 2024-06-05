@@ -1,64 +1,88 @@
 const tabs = document.querySelector(".tabs");
+const paginator = document.querySelector(".paginator");
 const bubbles = document.querySelector(".bubbles");
 const actions = document.querySelector(".actions");
-const height = document.querySelector("#height");
-const width = document.querySelector("#width");
+const input = document.querySelector(".input");
 
-let initialWindowHeight = window.visualViewport
-  ? window.visualViewport.height
-  : window.innerHeight;
-let initialWindowWidth = window.visualViewport
-  ? window.visualViewport.width
-  : window.innerWidth;
-
-height.innerHTML = `newHeight is ${initialWindowHeight}px`;
-width.innerHTML = `newWidth is is ${initialWindowWidth}px`;
-
-const updateHeightAndWidthInfo = (newWidth, newHeight) => {
-  height.innerHTML = `newHeight is ${newHeight}px`;
-  width.innerHTML = `newWidth is ${newWidth}px`;
-};
-
-const handleResize = (newWidth, newHeight) => {
-  console.log("newWidth: ", newWidth);
-  console.log("newHeight: ", newHeight);
-  console.log("initialWindowHeight: ", initialWindowHeight);
-  console.log("initialWindowWidth: ", initialWindowWidth);
-
-  // Если перевернули девайс
-  if (initialWindowWidth !== newWidth && initialWindowHeight !== newHeight) {
-    return;
-  }
-
-  // Вычитаем 100 пикселей т.к. в браузерах навбар умеет прятаться. То есть проверяем что экран уменьшился на большую высоту, чем навбар
-  if (newHeight < initialWindowHeight - 100) {
-    tabs.setAttribute("hidden", "true");
-    actions.setAttribute("hidden", "true");
-    bubbles.removeAttribute("hidden");
-  } else {
-    tabs.removeAttribute("hidden");
-    actions.removeAttribute("hidden");
-    bubbles.setAttribute("hidden", "true");
-  }
-
-  updateHeightAndWidthInfo(newWidth, newHeight);
+const updateStyles = (newHeight) => {
+  bubbles.style.top = `${newHeight - 40}px`;
 };
 
 if (window.visualViewport) {
   window.visualViewport.addEventListener("resize", () =>
-    handleResize(window.visualViewport.width, window.visualViewport.height)
+    updateStyles(window.visualViewport.height)
   );
+  updateStyles(window.visualViewport.height);
 } else {
-  window.addEventListener("resize", () =>
-    handleResize(window.innerWidth, window.innerHeight)
-  );
+  window.addEventListener("resize", () => updateStyles(window.innerHeight));
 }
 
-// Портретная или горизонтальная ориентация
-const portrait = window.matchMedia("(orientation: portrait)");
-portrait.addEventListener("change", () => {
-  initialWindowWidth = window.innerWidth;
-  initialWindowHeight = window.innerHeight;
-
-  updateHeightAndWidthInfo(initialWindowWidth, initialWindowHeight);
+input.addEventListener("focus", () => {
+  tabs.setAttribute("hidden", "true");
+  actions.setAttribute("hidden", "true");
+  bubbles.removeAttribute("hidden");
 });
+
+input.addEventListener("blur", () => {
+  tabs.removeAttribute("hidden");
+  actions.removeAttribute("hidden");
+  bubbles.setAttribute("hidden", "true");
+});
+
+function debounce(callee, timeoutMs) {
+  return function perform(...args) {
+    let previousCall = this.lastCall;
+
+    this.lastCall = Date.now();
+
+    if (previousCall && this.lastCall - previousCall <= timeoutMs) {
+      clearTimeout(this.lastCallTimer);
+    }
+
+    this.lastCallTimer = setTimeout(() => callee(...args), timeoutMs);
+  };
+}
+
+let fixPosition = 0; // the fix
+let lastScrollY = window.scrollY; // the last scroll position
+let toolbarWrap = document.getElementById("toolbar-wrap"); // the toolbar wrap
+let toolbar = document.getElementById("toolbar"); // the toolbar
+
+// function to set the margin to show the toolbar if hidden
+const setMargin = function () {
+  // if toolbar wrap is hidden
+  const newPosition = toolbarWrap.getBoundingClientRect().top;
+  if (newPosition < -1) {
+    // add a margin to show the toolbar
+    toolbar.classList.add("down"); // add class so toolbar can be animated
+    fixPosition = Math.abs(newPosition); // this is new position we need to fix the toolbar in the display
+    // if at the bottom of the page take a couple of pixels off due to gap
+    if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
+      fixPosition -= 2;
+    }
+    // set the margin to the new fixed position
+    toolbar.style["margin-top"] = fixPosition + "px";
+  }
+};
+
+// use lodash debounce to stop flicker
+// const debounceMargin = debounce(setMargin, 150);
+
+// function to run on scroll and blur
+const showToolbar = function () {
+  // remove animation and put toolbar back in default position
+  if (fixPosition > 0) {
+    toolbar.classList.remove("down");
+    fixPosition = 0;
+    toolbar.style["margin-top"] = 0 + "px";
+  }
+  // will check if toolbar needs to be fixed
+  setMargin();
+};
+
+// add an event listener to scroll to check if
+// toolbar position has moved off the page
+window.addEventListener("scroll", showToolbar);
+// add an event listener to blur as iOS keyboard may have closed
+// and toolbar postition needs to be checked again
+input.addEventListener("blur", showToolbar);
