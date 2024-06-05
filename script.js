@@ -1,10 +1,10 @@
 const tabs = document.querySelector(".tabs");
 const paginator = document.querySelector(".paginator");
-const bubbles = document.querySelector(".bubbles");
-const actions = document.querySelector(".actions");
+const snippets = document.querySelector(".snippets");
+const controls = document.querySelector(".controls");
 const input = document.querySelector(".input");
 const topBar = document.querySelector(".topBar");
-const info = document.querySelector(".info");
+const bottomBar = document.querySelector(".bottomBar");
 
 function debounce(fn, delay) {
   let timerId;
@@ -22,19 +22,25 @@ function debounce(fn, delay) {
   };
 }
 
+const focusOnInput = (e) => {
+  e.preventDefault();
+  input.focus();
+};
+
+snippets.addEventListener("mousedown", focusOnInput);
+
 input.addEventListener("focus", () => {
   tabs.setAttribute("hidden", "true");
-  actions.setAttribute("hidden", "true");
-  bubbles.removeAttribute("hidden");
+  controls.setAttribute("hidden", "true");
+  snippets.removeAttribute("hidden");
 });
 
 input.addEventListener("blur", () => {
   tabs.removeAttribute("hidden");
-  actions.removeAttribute("hidden");
-  bubbles.setAttribute("hidden", "true");
+  controls.removeAttribute("hidden");
+  snippets.setAttribute("hidden", "true");
 });
 
-const bottomBar = document.querySelector(".bottombar");
 const viewport = window.visualViewport;
 let pendingUpdate = false;
 
@@ -44,7 +50,7 @@ function viewportHandler(event) {
 
   requestAnimationFrame(() => {
     pendingUpdate = false;
-    const layoutViewport = document.getElementById("layoutViewport");
+    const layoutViewport = document.querySelector(".layoutViewport");
 
     // Since the bar is position: fixed we need to offset it by the
     // visual viewport's offset from the layout viewport origin.
@@ -71,8 +77,8 @@ const showBars = () => {
   topBar.removeAttribute("hidden");
 };
 
-const debouncedViewportHandler = debounce(viewportHandler, 300);
-const debouncedShowBars = debounce(showBars, 300);
+const debouncedViewportHandler = debounce(viewportHandler, 500);
+const debouncedShowBars = debounce(showBars, 500);
 
 const handleViewport = (e) => {
   bottomBar.setAttribute("hidden", "true");
