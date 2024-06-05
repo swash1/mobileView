@@ -6,6 +6,22 @@ const input = document.querySelector(".input");
 const wrapper = document.querySelector(".wrapper");
 const info = document.querySelector(".info");
 
+function debounce(fn, delay) {
+  let timerId;
+
+  return function (...args) {
+    // Если таймер уже существует, очистим его (сбросим время)
+    if (timerId) {
+      clearTimeout(timerId);
+    }
+
+    // Устанавливаем новый таймер
+    timerId = setTimeout(() => {
+      fn(...args);
+    }, delay);
+  };
+}
+
 input.addEventListener("focus", () => {
   // tabs.setAttribute("hidden", "true");
   actions.setAttribute("hidden", "true");
@@ -44,8 +60,28 @@ function viewportHandler(event) {
     bottomBar.style.transform = `translate(${offsetLeft}px, ${offsetTop}px) scale(${
       1 / viewport.scale
     })`;
+
+    bottomBar.removeAttribute("hidden");
   });
 }
 
-window.visualViewport.addEventListener("scroll", viewportHandler);
-window.visualViewport.addEventListener("resize", viewportHandler);
+const showBottomBar = () => {
+  bottomBar.removeAttribute("hidden");
+};
+
+const debouncedViewportHandler = debounce(viewportHandler, 500);
+const debouncedShowBottomBar = debounce(showBottomBar, 500);
+
+const handleViewport = (e) => {
+  bottomBar.setAttribute("hidden", "true");
+  debouncedViewportHandler(e);
+};
+
+window.visualViewport.addEventListener("scroll", (e) => handleViewport(e));
+window.visualViewport.addEventListener("resize", (e) => handleViewport(e));
+
+window.addEventListener("scroll", () => {
+  bottomBar.setAttribute("hidden", "true");
+
+  debouncedShowBottomBar();
+});
