@@ -32,7 +32,6 @@ body {
 
 .bubbles {
   position: fixed;
-  bottom: 0;
   left: 0;
   background-color: white;
   width: 100%;
@@ -46,14 +45,7 @@ body {
 }
 
 .wrapper {
-  position: sticky;
-  top: 0px;
-  height: 80px;
-  width: 100%;
-}
-
-.another-wrapper {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
