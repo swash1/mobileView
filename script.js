@@ -67,6 +67,10 @@ function viewportHandler(event) {
       1 / viewport.scale
     })`;
 
+    topBar.style.transform = `translate(${offsetLeft}px, ${
+      viewport.offsetTop
+    }px) scale(${1 / viewport.scale})`;
+
     bottomBar.removeAttribute("hidden");
     topBar.removeAttribute("hidden");
   });
